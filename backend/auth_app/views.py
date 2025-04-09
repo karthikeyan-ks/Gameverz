@@ -32,7 +32,6 @@ def firebase_login(request):
         try:
             data = json.loads(request.body)
             id_token = data.get("idToken")
-
             if not id_token:
                 return JsonResponse({"error": "Missing idToken"}, status=400)
 
@@ -127,6 +126,7 @@ def signUp(request):
         )
         user.set_password(password)
         user.save()
+        login(request,user)
     return JsonResponse({
         "message":"Successfully created your account!",
         "status":"success"

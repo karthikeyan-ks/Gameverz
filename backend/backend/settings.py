@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',  # Django REST Framework
     'auth_app',  # Custom authentication app
     'channels',
-    'gameAdmin'
+    'gameAdmin',
+    'common'
 ]
 CORS_ALLOWED_ORIGINS = [
     
@@ -140,7 +141,10 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+SESSION_COOKIE_SAMESITE = 'Lax'        # For local dev
+SESSION_COOKIE_SECURE = False          # Only True for HTTPS
+CSRF_COOKIE_SAMESITE = 'Lax'           # Same for CSRF if you're using it
+CSRF_COOKIE_SECURE = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
@@ -159,7 +163,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # for collectstatic
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),  # ← remove this if unused
 ]
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Default primary key field type

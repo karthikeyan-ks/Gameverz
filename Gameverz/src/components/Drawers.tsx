@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+
+import { Link, useNavigate } from 'react-router-dom';
 import {
-  Box,
+ 
   Typography,
-  TextField,
-  Button,
   Drawer,
   Toolbar,
   List,
@@ -11,49 +10,79 @@ import {
   ListItemText,
   Divider,
 } from '@mui/material';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import EventIcon from '@mui/icons-material/Event';
 import AssessmentIcon from '@mui/icons-material/Assessment';
-import { styled } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+
+const baseURL = import.meta.env.VITE_API_IMAGE_URL;
+function getCookie(name: string): string {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    const result = parts.pop()?.split(';').shift();
+    return result ?? '';
+  }
+  return '';
+}
+
 
 const drawerWidth = 240;
 export default function Drawers() {
-  const navigate = useNavigate();
-    return (
-      
+  
+  const navigate = useNavigate()
+  return (
+
     <Drawer
-    variant="permanent"
-    sx={{
-      width: drawerWidth,
-      flexShrink: 0,
-      '& .MuiDrawer-paper': {
+      variant="permanent"
+      sx={{
         width: drawerWidth,
-        boxSizing: 'border-box',
-        backgroundColor: '#919191',
-        color: 'black',
-      },
-    }}
-  >
-    <Toolbar>
-      <Typography variant="h6" noWrap component="div">
-        Dashboard
-      </Typography>
-    </Toolbar>
-    <Divider sx={{ backgroundColor: 'rgba(0,0,0)' }} />
-    <List>
+        flexShrink: 0,
+        '& .MuiDrawer-paper': {
+          width: drawerWidth,
+          boxSizing: 'border-box',
+          backgroundColor: '#919191',
+          color: 'black',
+        },
+      }}
+    >
+      <Toolbar>
+        <Typography variant="h6" noWrap component="div">
+          Dashboard
+        </Typography>
+      </Toolbar>
+      <Divider sx={{ backgroundColor: 'rgba(0,0,0)' }} />
+      <List>
       
-      <ListItem button onClick={() => navigate('/gameAdmin')}>
+      
+
+      <ListItem  component={Link} to="/gameAdmin">
         <EventIcon sx={{ mr: 2 }} />
         <ListItemText primary="All event" />
       </ListItem>
-      <ListItem button onClick={() => navigate('/AddEventPage')}>
+
+      <ListItem  component={Link} to="/gameAdmin/addevent/">
         <AssessmentIcon sx={{ mr: 2 }} />
         <ListItemText primary="Add Events" />
       </ListItem>
-     
-    </List>
-  </Drawer>
-    );
+      <ListItem  component={"button"} onClick={()=>{
+        fetch(`${baseURL}/logout/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          credentials: 'include',
+        }).then((res)=>{
+          navigate('/')
+        });
+
+        
+      }}>
+        <EventIcon sx={{ mr: 2 }} />
+        <ListItemText primary="logout" />
+      </ListItem>
+
+
+
+      </List>
+    </Drawer>
+  );
 }

@@ -10,7 +10,7 @@ function LoginOptions() {
   const location = useLocation()
   const baseURL = import.meta.env.VITE_API_BASE_URL;
   console.log(baseURL)
-  const user = location.state||null;
+  const user = location.state || null;
   const dashboardURL = user === null ? `${baseURL}/accounts/firebase-login/` : `${baseURL}/accounts/gameadmin/`;
 
   const handleGoogleLogin = async () => {
@@ -23,7 +23,7 @@ function LoginOptions() {
         dashboardURL,
         {
           method: "POST",
-          credentials:"include",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ idToken }),
         }
@@ -35,14 +35,16 @@ function LoginOptions() {
       if (response.ok) {
 
         // Redirect to Gameverz with user details
-        if (data['status'] === "success"){
+        if (data['status'] === "success") {
           console.log(data['redirect'])
           if (data['redirect'] === "gamerDashboard")
-            navigate("/gameverz");
+            navigate("/gameverz", { state: {
+              user: data
+          }});
           else
-          navigate("/gameAdmin");
+            navigate("/gameAdmin");
         }
-        
+
       } else {
         alert("Login failed: " + (data.error || "Unknown error"));
       }
@@ -113,10 +115,10 @@ function LoginOptions() {
         <Button
           variant="contained"
           startIcon={<AccountBalanceWalletIcon />}
-          onClick={()=>{
-            if (user){
-              navigate('/signup',{state:user})
-            }else{
+          onClick={() => {
+            if (user) {
+              navigate('/signup', { state: user })
+            } else {
               navigate('/signup')
             }
           }}

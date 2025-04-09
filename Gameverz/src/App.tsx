@@ -8,6 +8,9 @@ import GameverzLanding from './components/GameverzLanding';
 import Signup from './pages/signup';
 import GameAdminDashboard from './pages/GameAdminDashboard';
 import AddEventPage from './pages/Addevent';
+import Addevent from './pages/Addevent';
+import { ListEvents } from './components/ListEvents';
+
 
 // Dark theme (default)
 const darkTheme = createTheme({
@@ -64,28 +67,33 @@ function App() {
           <Route path="/gameverz" element={<UserDashboard />} />
           <Route path="/signup" element={<Signup />} />
 
-          {/* Light themed pages */}
-          <Route 
-            path="/gameAdmin" 
+          {/* Nested routes under /gameAdmin */}
+          <Route
+            path="/gameAdmin"
             element={
               <ThemeProvider theme={lightTheme}>
                 <CssBaseline />
                 <GameAdminDashboard />
               </ThemeProvider>
-            } 
-          />
-          <Route 
-            path="/AddEventPage" 
+            }
+          >
+            <Route path="" element={<ListEvents/>}/>
+            <Route path="addevent" element={<Addevent />} /> {/* ✅ FIXED HERE */}
+          </Route>
+
+          <Route
+            path="/AddEventPage"
             element={
               <ThemeProvider theme={lightTheme}>
                 <CssBaseline />
                 <AddEventPage />
               </ThemeProvider>
-            } 
+            }
           />
         </Routes>
       </Router>
     </ThemeProvider>
+
   );
 }
 
