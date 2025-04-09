@@ -11,7 +11,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
 import CardContent from '@mui/material/CardContent';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -19,24 +19,36 @@ import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import PersonIcon from '@mui/icons-material/Person';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import IconButton from '@mui/material/IconButton';
-import {listItem,darkTheme,Sidebar,Logo,MainContent,SectionCard,GameItem} from '../style/dashboard_style'
-
-
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import {
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  LineChart,
+  Line
+} from 'recharts';
+import {
+  listItem, darkTheme, Sidebar, Logo, MainContent, SectionCard, GameItem
+} from '../style/dashboard_style';
 
 export default function Gameverz() {
   const location = useLocation();
+  const navigate = useNavigate()
   const user = location.state?.user || {
     display_name: 'Player',
     email: 'player@example.com',
     user_id: '12345',
     photo_url: '/api/placeholder/150/150',
   };
-  console.log(user)
 
   const games = [
     { name: 'Valorant', icon: <SportsEsportsIcon /> },
     { name: 'PUBG', icon: <SportsEsportsIcon /> },
     { name: 'Fortnite', icon: <SportsEsportsIcon /> },
+  ];
+
+  const performanceData = [
+    { name: 'Valorant', performance: 80 },
+    { name: 'PUBG', performance: 65 },
+    { name: 'Fortnite', performance: 90 }
   ];
 
   return (
@@ -55,8 +67,7 @@ export default function Gameverz() {
             <Typography sx={listItem}>
               Dashboard
             </Typography>
-            <IconButton >
-
+            <IconButton>
               <ArrowBackIcon />
             </IconButton>
           </ListItem>
@@ -87,6 +98,9 @@ export default function Gameverz() {
                     variant: 'body2',
                     sx: { fontSize: '0.8rem' }
                   }}
+                  onClick={()=>{
+                    navigate("/allGame")
+                  }}
                 />
               </ListItemButton>
             </ListItem>
@@ -103,11 +117,13 @@ export default function Gameverz() {
         </Sidebar>
 
         <MainContent>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end',alignItems:"center",gap:"20px", mb: 3 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: "center", gap: "20px", mb: 3 }}>
             <IconButton sx={{ backgroundColor: '#10172A' }}>
               <PersonIcon />
             </IconButton>
-            <Typography variant="h5" sx={{ textAlign:"center",height:"100%" }}>{user.email.split('@')[0]}</Typography>
+            <Typography variant="h5" sx={{ textAlign: "center", height: "100%",color:"black" }}>
+              {user.email.split('@')[0]}
+            </Typography>
           </Box>
 
           <Grid container spacing={3}>
@@ -119,6 +135,8 @@ export default function Gameverz() {
                     sx={{
                       display: 'flex',
                       justifyContent: 'center',
+                      flexDirection:"column",
+                      alignItems:"center",
                       p: 2,
                       position: 'relative'
                     }}
@@ -144,6 +162,18 @@ export default function Gameverz() {
                     >
                       <SportsEsportsIcon sx={{ fontSize: 16, color: '#000' }} />
                     </IconButton>
+                    <Typography  sx={{
+                      textAlign:"start",
+                      width:"100%"
+                    }}>
+                      name :{user.display_name}
+                    </Typography>
+                    <Typography sx={{
+                      textAlign:"start",
+                      width:"100%"
+                    }}>
+                      email :{user.email}
+                    </Typography>
                   </Box>
                 </CardContent>
               </SectionCard>
@@ -178,7 +208,31 @@ export default function Gameverz() {
                   <Typography variant="h6" sx={{ mb: 1 }}>
                     Achievements
                   </Typography>
-                  <Box sx={{ height: 80 }} /> {/* Placeholder for achievements content */}
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    <List sx={{ p: 0 }}>
+                      <ListItem disablePadding>
+                        <ListItemIcon sx={{ minWidth: 30 }}>
+                          <EmojiEventsIcon sx={{ color: '#FFD700' }} />
+                        </ListItemIcon>
+                        <ListItemText primary="Top 1% in Valorant"
+                          primaryTypographyProps={{ sx: { fontSize: '0.85rem' } }} />
+                      </ListItem>
+                      <ListItem disablePadding>
+                        <ListItemIcon sx={{ minWidth: 30 }}>
+                          <EmojiEventsIcon sx={{ color: '#C0C0C0' }} />
+                        </ListItemIcon>
+                        <ListItemText primary="200+ PUBG matches completed"
+                          primaryTypographyProps={{ sx: { fontSize: '0.85rem' } }} />
+                      </ListItem>
+                      <ListItem disablePadding>
+                        <ListItemIcon sx={{ minWidth: 30 }}>
+                          <EmojiEventsIcon sx={{ color: '#CD7F32' }} />
+                        </ListItemIcon>
+                        <ListItemText primary="Fortnite Season Champ"
+                          primaryTypographyProps={{ sx: { fontSize: '0.85rem' } }} />
+                      </ListItem>
+                    </List>
+                  </Box>
                 </CardContent>
               </SectionCard>
             </Grid>
@@ -190,7 +244,26 @@ export default function Gameverz() {
                   <Typography variant="h6" sx={{ mb: 1 }}>
                     Performance
                   </Typography>
-                  <Box sx={{ height: 80 }} /> {/* Placeholder for performance content */}
+                  <ResponsiveContainer width="100%" height={200}>
+                    <LineChart
+                      data={performanceData}
+                      margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis domain={[0, 100]} />
+                      <Tooltip />
+                      <Line
+                        type="monotone"
+                        dataKey="performance"
+                        stroke="#00faff"
+                        strokeWidth={3}
+                        dot={{ r: 5, stroke: '#00faff', strokeWidth: 2, fill: '#fff' }}
+                        activeDot={{ r: 7 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+
                 </CardContent>
               </SectionCard>
             </Grid>

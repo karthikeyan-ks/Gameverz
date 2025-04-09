@@ -11,14 +11,8 @@ import json
 @login_required
 def dashboard(request):
     user  = request.user
-    try:
-        gameAdmin = GameAdmin.objects.get(uid = user)
-    except GameAdmin.DoesNotExist:
-        return JsonResponse({
-            'message':'GameAdmin not found for the authenticated user.',
-            'status':'error'
-        },status = 403)
-    games = Game.objects.filter(created_by=user)
+    print(user)
+    games = Game.objects.all()
     data = serialize('json', games)
     return JsonResponse({
         'message':data,

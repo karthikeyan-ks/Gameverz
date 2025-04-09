@@ -10,6 +10,7 @@ import GameAdminDashboard from './pages/GameAdminDashboard';
 import AddEventPage from './pages/Addevent';
 import Addevent from './pages/Addevent';
 import { ListEvents } from './components/ListEvents';
+import GameList from './pages/allgame';
 
 
 // Dark theme (default)
@@ -84,12 +85,15 @@ function App() {
           <Route
             path="/AddEventPage"
             element={
-              <ThemeProvider theme={lightTheme}>
-                <CssBaseline />
-                <AddEventPage />
-              </ThemeProvider>
+              <AddEventPage />
             }
           />
+          <Route path='/allGame' element={
+            <ThemeProvider theme={darkTheme}>
+              <CssBaseline/>
+              <GameList/>
+            </ThemeProvider>
+          } />
         </Routes>
       </Router>
     </ThemeProvider>
