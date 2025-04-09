@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',  # Django REST Framework
     'auth_app',  # Custom authentication app
     'channels',
-    'gamer'
+    'gameAdmin'
 ]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # React frontend (Vite default)
