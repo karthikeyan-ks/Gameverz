@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'gameAdmin'
 ]
 CORS_ALLOWED_ORIGINS = [
+    
     "http://localhost:5173",  # React frontend (Vite default)
     "http://127.0.0.1:5173",
 ]
@@ -54,6 +55,7 @@ CORS_ALLOW_CREDENTIALS = True  # Allow cookies and authentication headers
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://gameverz.onrender.com",
 ]
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
