@@ -5,6 +5,8 @@ import UserDashboard from './components/UserDashboard';
 import CreateAccount from './components/CreateAccount';
 import LoginOptions from './components/LoginOptions';
 import GameverzLanding from './components/GameverzLanding';
+import Signup from './pages/signup';
+import { GameAdminDashboard } from './pages/GameAdminDashboard';
 
 // Custom dark theme
 const theme = createTheme({
@@ -52,6 +54,8 @@ function App() {
             <Route path="/create-account" element={<CreateAccount />} />
             <Route path="/login" element={<LoginOptions />} />
             <Route path="/gameverz" element={<UserDashboard />} />
+            <Route path='/signup' element={<Signup/>}/>
+            <Route path='/gameAdmin' element={<GameAdminDashboard/>}/>
           </Routes>
         </div>
       </Router>

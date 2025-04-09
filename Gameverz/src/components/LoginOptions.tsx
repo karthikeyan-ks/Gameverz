@@ -3,10 +3,15 @@ import GoogleIcon from "@mui/icons-material/Google";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import { auth, provider } from "./firebase";
 import { signInWithPopup } from "firebase/auth";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useLocation, useNavigate } from "react-router-dom"; // Import useNavigate
 
 function LoginOptions() {
   const navigate = useNavigate(); // Initialize useNavigate
+  const location = useLocation()
+  const baseURL = import.meta.env.VITE_API_BASE_URL;
+  console.log(baseURL)
+  const user = location.state||null;
+  const dashboardURL = user === null ? `${baseURL}/accounts/firebase-login/` : `${baseURL}/accounts/gameadmin/`;
 
   const handleGoogleLogin = async () => {
     try {
@@ -15,7 +20,7 @@ function LoginOptions() {
 
       // Send token to Django
       const response = await fetch(
-        "http://127.0.0.1:8000/api/accounts/firebase-login/",
+        dashboardURL,
         {
           method: "POST",
           credentials:"include",
@@ -28,8 +33,16 @@ function LoginOptions() {
       console.log("Django Response:", data); // Debugging
 
       if (response.ok) {
+
         // Redirect to Gameverz with user details
-        navigate("/gameverz", { state: { user: data } });
+        if (data['status'] === "success"){
+          console.log(data['redirect'])
+          if (data['redirect'] === "gamerDashboard")
+            navigate("/gameverz");
+          else
+          navigate("/gameAdmin");
+        }
+        
       } else {
         alert("Login failed: " + (data.error || "Unknown error"));
       }
@@ -100,6 +113,13 @@ function LoginOptions() {
         <Button
           variant="contained"
           startIcon={<AccountBalanceWalletIcon />}
+          onClick={()=>{
+            if (user){
+              navigate('/signup',{state:user})
+            }else{
+              navigate('/signup')
+            }
+          }}
           style={{
             backgroundColor: "#01012B",
             color: "white",

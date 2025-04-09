@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',  # Django REST Framework
     'auth_app',  # Custom authentication app
-    'channels'
+    'channels',
+    'gamer'
 ]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # React frontend (Vite default)

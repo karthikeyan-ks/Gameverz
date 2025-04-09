@@ -16,3 +16,26 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.display_name or self.email
+    
+    
+class GameAdmin(models.Model):
+    gid = models.AutoField(primary_key=True)
+    uid = models.ForeignKey(User, related_name="game_admin_user", on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f'{self.uid.username}({self.gid})'
+
+    def save(self, *args, **kwargs):
+        if Gamer.objects.filter(uid=self.uid).exists():
+            raise ValueError("This user is already a Gamer and cannot be a GameAdmin.")
+        super().save(*args, **kwargs)
+
+
+class Gamer(models.Model):
+    gid = models.AutoField(primary_key=True)
+    uid = models.ForeignKey(User, related_name="gamer_user", on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        if GameAdmin.objects.filter(uid=self.uid).exists():
+            raise ValueError("This user is already a GameAdmin and cannot be a Gamer.")
+        super().save(*args, **kwargs)
