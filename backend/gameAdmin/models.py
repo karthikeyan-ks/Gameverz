@@ -23,5 +23,8 @@ class Game(models.Model):
     created_by = models.ForeignKey('auth_app.GameAdmin',on_delete=models.CASCADE,related_name="game_created_by")
     active = models.BooleanField(default=True)
     
+    def __str__(self):
+        return f'{self.name}({self.gid}) by {self.created_by.uid.username}'
+    
     
     

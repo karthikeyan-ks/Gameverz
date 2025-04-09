@@ -34,7 +34,7 @@ class GameAdmin(models.Model):
 class Gamer(models.Model):
     gid = models.AutoField(primary_key=True)
     uid = models.ForeignKey(User, related_name="gamer_user", on_delete=models.CASCADE)
-    games = models.ManyToManyField('gamer.Game',blank=True,null=True,related_name="gamers_games")
+    games = models.ManyToManyField('gameAdmin.Game',blank=True,null=True,related_name="gamers_games")
 
     def save(self, *args, **kwargs):
         if GameAdmin.objects.filter(uid=self.uid).exists():
