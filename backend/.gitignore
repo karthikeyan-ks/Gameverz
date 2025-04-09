@@ -2,7 +2,6 @@
 firebase-key.json
 
 # SQLite DB
-db.sqlite3
 
 # Python/Mac/OS/Linux common files
 __pycache__/
