@@ -21,6 +21,7 @@ class Game(models.Model):
     date_of_join  = models.DateField(default=timezone.now)
     genre = models.ManyToManyField(Genre,blank=False,related_name="game_genre")
     created_by = models.ForeignKey('auth_app.GameAdmin',on_delete=models.CASCADE,related_name="game_created_by")
+    active = models.BooleanField(default=True)
     
     
     
