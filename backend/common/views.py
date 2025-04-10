@@ -77,7 +77,7 @@ def update_gamer_games(request, gid, action):
         return JsonResponse({'message': 'Invalid action', 'status': 'error'})
 
     try:
-        game = Game.objects.get(id=gid)
+        game = Game.objects.get(gid=gid)
 
         if action == 'add':
             gamer.games.add(game)
