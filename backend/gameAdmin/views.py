@@ -5,6 +5,8 @@ from auth_app.models import User,Gamer,GameAdmin
 from .models import Game,Genre,Event
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
+from backend.decorator import jwt_required
+
 import json
 @csrf_exempt
 @require_POST
@@ -236,10 +238,11 @@ def delete_event(request, event_id):
         })
     
 
-@login_required
+@jwt_required
 @require_POST
 @csrf_exempt
 def list_event(request):
+    
     user  = request.user
     try:
         gameAdmin = GameAdmin.objects.get(uid = user)

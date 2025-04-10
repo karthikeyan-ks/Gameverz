@@ -11,6 +11,7 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 import re
 from .models import GameAdmin
+from backend.decorator import jwt_login_response
 
 # Get the absolute path to the service account file
 FIREBASE_CREDENTIALS_PATH = os.path.join(settings.BASE_DIR, "firebase-key.json")
@@ -26,6 +27,7 @@ if not firebase_admin._apps:
 User = get_user_model()
 logger = logging.getLogger(__name__)
 
+@jwt_login_response
 @csrf_exempt  # CSRF exemption should be directly above the function
 def firebase_login(request):
     if request.method == "POST":
@@ -74,7 +76,8 @@ def firebase_login(request):
         except Exception as e:
             print(f"Firebase Login Error: {e}")  # Debugging
             return JsonResponse({"error": str(e)}, status=500)
-
+        
+@jwt_login_response
 @csrf_exempt
 def signUp(request):
     if request.method == "POST":
@@ -131,7 +134,8 @@ def signUp(request):
         "message":"Successfully created your account!",
         "status":"success"
     })
-    
+
+@jwt_login_response
 @csrf_exempt
 def gameAdminSignup(request):
     print("game Admin sign up")
