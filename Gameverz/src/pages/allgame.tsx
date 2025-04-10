@@ -48,7 +48,8 @@ const GameList = () => {
       const games = response.data;
       const cleaned = JSON.parse(games.message);
       const selected = new Set<number>(games.selected_game_ids); // 👈 here we extract the selected IDs
-  
+      console.log(response.data);
+      
       setGames(cleaned);
       setSelectedGames(selected); // 👈 pre-check these games
       setLoading(false);
@@ -63,7 +64,7 @@ const GameList = () => {
   }, []);
 
   const handleCheckboxChange = (pk: number) => {
-    var action = selectedGames.has(pk) ? 'add' : 'remove'
+    var action = selectedGames.has(pk) ? 'remove' : 'add'
     setSelectedGames(prev => {
       const newSet = new Set(prev);
       newSet.has(pk) ? newSet.delete(pk) : newSet.add(pk);
