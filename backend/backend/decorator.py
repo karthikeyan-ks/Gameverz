@@ -43,31 +43,27 @@ def jwt_required(view_func):
 def jwt_login_response(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
-        result = view_func(request, *args, **kwargs)
+        print("[Decorator] Called for:", request.path)
 
-        if isinstance(result, dict) and result.get('user'):
-            token = generate_jwt(result['user'])
-            print("New Token is generated:", token)
-            response = JsonResponse({'detail': 'Login successful'})
+        response = view_func(request, *args, **kwargs)
+
+        if request.user.is_authenticated and isinstance(response, JsonResponse):
+            print("[Decorator] User is authenticated:", request.user)
+
+            token = generate_jwt(request.user)
+            print("[Decorator] New Token is generated:", token)
+
             response.set_cookie(
                 key='jwt_token',
                 value=token,
-                httponly=False,
+                httponly=True,
                 samesite='None',
-                secure=True  # change to True in production
+                secure=True  # Use True with HTTPS
             )
-            return response
 
-        # If already a response (like JsonResponse), return as-is
-        if isinstance(result, HttpResponse):
-            return result
-
-        return JsonResponse(result, status=401, safe=False)
+        return response
 
     return _wrapped_view
-
-
-
 
 def jwt_required(view_func):
     @wraps(view_func)
@@ -76,11 +72,9 @@ def jwt_required(view_func):
         print(token)
         if not token:
             return JsonResponse({'detail': 'Authentication required'}, status=401)
-
         user_id = verify_jwt(token)
         if not user_id:
             return JsonResponse({'detail': 'Invalid or expired token'}, status=401)
-
         try:
             request.user = User.objects.get(id=user_id)
         except User.DoesNotExist:

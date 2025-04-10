@@ -27,8 +27,9 @@ if not firebase_admin._apps:
 User = get_user_model()
 logger = logging.getLogger(__name__)
 
-@jwt_login_response
+
 @csrf_exempt  # CSRF exemption should be directly above the function
+@jwt_login_response
 def firebase_login(request):
     if request.method == "POST":
         try:

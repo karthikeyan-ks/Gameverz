@@ -10,7 +10,7 @@ from backend.decorator import jwt_required
 import json
 @csrf_exempt
 @require_POST
-@login_required
+@jwt_required
 def dashboard(request):
     user  = request.user
     print(user)
@@ -153,7 +153,7 @@ def updateGame(request,gid):
     
 @csrf_exempt
 @require_POST
-@login_required
+@jwt_required
 def searchGame(request,name):
     games = Game.objects.filter( name__startswith=name)
     data = serialize('json', games)
@@ -162,7 +162,7 @@ def searchGame(request,name):
         'status':'success'
     },status = 200)
 
-@login_required
+@jwt_required
 @require_POST
 @csrf_exempt
 def create_event(request):
@@ -194,7 +194,7 @@ def create_event(request):
         })
     
 
-@login_required
+@jwt_required
 @require_POST
 @csrf_exempt
 def update_event(request, event_id):
@@ -218,7 +218,7 @@ def update_event(request, event_id):
         'status' : 'error'
         })
 
-@login_required
+@jwt_required
 @require_POST
 @csrf_exempt
 def delete_event(request, event_id):
