@@ -197,7 +197,7 @@ export default function Addevent() {
                 freeSolo
                 value={game}
                 inputValue={game}
-                onInputChange={(e, newInputValue, reason) => {
+                onInputChange={(e, newInputValue) => {
                   setGame(newInputValue);
                   setGameList([])
 

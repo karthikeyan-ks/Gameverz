@@ -45,16 +45,20 @@ def list_event(request):
 def allGames(request):
     user = request.user
     try:
-        gamer = Gamer.objects.get(uid = user)
+        gamer = Gamer.objects.get(uid=user)
     except Gamer.DoesNotExist:
         return JsonResponse({
-            'message':'Registered user is not a Gamer',
-            'status':'error'
+            'message': 'Registered user is not a Gamer',
+            'status': 'error'
         })
-    games = gamer.games.all()
-    data = serialize('json', games)
+    all_games = Game.objects.all()
+    joined_games = gamer.games.all()
+    joined_game_ids = list(joined_games.values_list('id', flat=True))
+    all_games_serialized = serialize('json', all_games)
+
     return JsonResponse({
-        'message': data,
+        'message': all_games_serialized,
+        'selected_game_ids': joined_game_ids,
         'status': 'success'
     })
 
@@ -63,6 +67,7 @@ def allGames(request):
 @csrf_exempt
 def update_gamer_games(request, gid, action):
     user = request.user
+    print(user)
     try:
         gamer = Gamer.objects.get(uid=user)
     except Gamer.DoesNotExist:
