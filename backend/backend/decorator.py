@@ -52,7 +52,7 @@ def jwt_login_response(view_func):
             response.set_cookie(
                 key='jwt_token',
                 value=token,
-                httponly=True,
+                httponly=False,
                 samesite='None',
                 secure=True  # change to True in production
             )
