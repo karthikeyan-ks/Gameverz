@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-dnp*uks-y1kpi_unh048*g8!vb8pam12i5sy82g9=g=&nj20sj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['gameverz.onrender.com','127.0.0.1','0.0.0.0','localhost']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -59,6 +59,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://gameverz.onrender.com",
 ]
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
