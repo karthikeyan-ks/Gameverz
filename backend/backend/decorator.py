@@ -54,7 +54,7 @@ def jwt_login_response(view_func):
                 value=token,
                 httponly=True,
                 samesite='None',
-                secure=False  # change to True in production
+                secure=True  # change to True in production
             )
             return response
 
