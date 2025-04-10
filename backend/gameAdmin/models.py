@@ -24,7 +24,7 @@ class Game(models.Model):
     active = models.BooleanField(default=True)
     
     def __str__(self):
-        return f'{self.name}({self.gid}) by {self.created_by.uid.username}'
+        return f'{self.name}({self.gid}) by {self.created_by.username}'
     
     
 

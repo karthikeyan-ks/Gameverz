@@ -46,9 +46,9 @@ export default function Gameverz() {
   ];
 
   const performanceData = [
-    { name: 'Valorant', performance: 80 },
-    { name: 'PUBG', performance: 65 },
-    { name: 'Fortnite', performance: 90 }
+    { name: 'Valorant', performance: 50 },
+    { name: 'PUBG', performance: 50 },
+    { name: 'Fortnite', performance: 50 }
   ];
 
   return (

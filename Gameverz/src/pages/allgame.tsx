@@ -77,7 +77,19 @@ const GameList = () => {
         placeholder="Search games..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        sx={{ mb: 2,border:"solid 2px black",borderRadius:"10px" }}
+        sx={{
+          my: 2,
+          backgroundColor: '#fff', // light background
+          input: {
+            color: '#000', // input text color
+          },
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#ccc', // optional border styling
+          },
+          '& .MuiInputBase-input::placeholder': {
+            color: '#888', // placeholder color
+          },
+        }}
       />
 
       {loading ? (
