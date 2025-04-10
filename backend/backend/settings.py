@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-dnp*uks-y1kpi_unh048*g8!vb8pam12i5sy82g9=g=&nj20sj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['gameverz.onrender.com','127.0.0.1','0.0.0.0','localhost','192.168.1.35']
 
 
 # Application definition
@@ -49,6 +49,7 @@ CORS_ALLOWED_ORIGINS = [
     
     "http://localhost:5173",  # React frontend (Vite default)
     "http://127.0.0.1:5173",
+    "http://192.168.1.35:5173"
 ]
 
 CORS_ALLOW_CREDENTIALS = True  # Allow cookies and authentication headers
@@ -56,6 +57,7 @@ CORS_ALLOW_CREDENTIALS = True  # Allow cookies and authentication headers
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://192.168.1.35:8000"
     "https://gameverz.onrender.com",
 ]
 MIDDLEWARE = [

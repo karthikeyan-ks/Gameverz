@@ -43,16 +43,9 @@ def jwt_required(view_func):
 def jwt_login_response(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
-        print("[Decorator] Called for:", request.path)
-
         response = view_func(request, *args, **kwargs)
-
         if request.user.is_authenticated and isinstance(response, JsonResponse):
-            print("[Decorator] User is authenticated:", request.user)
-
             token = generate_jwt(request.user)
-            print("[Decorator] New Token is generated:", token)
-
             response.set_cookie(
                 key='jwt_token',
                 value=token,
@@ -69,7 +62,6 @@ def jwt_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         token = request.COOKIES.get('jwt_token')
-        print(token)
         if not token:
             return JsonResponse({'detail': 'Authentication required'}, status=401)
         user_id = verify_jwt(token)

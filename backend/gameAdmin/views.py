@@ -7,19 +7,31 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from backend.decorator import jwt_required
 
-import json
 @csrf_exempt
 @require_POST
 @jwt_required
 def dashboard(request):
-    user  = request.user
-    print(user)
-    games = Game.objects.all()
-    data = serialize('json', games)
+    print("Entered the view")
+    user = request.user
+    try:
+        gamer = Gamer.objects.get(uid=user)
+    except Gamer.DoesNotExist:
+        return JsonResponse({
+            'message': 'Registered user is not a Gamer',
+            'status': 'error'
+        })
+    
+    all_games = Game.objects.all()
+    print("User",user,all_games)
+    joined_games = gamer.games.all()
+    joined_game_ids = list(joined_games.values_list('gid', flat=True))
+    all_games_serialized = serialize('json', all_games)
+
     return JsonResponse({
-        'message':data,
-        'status':'success'
-    },status = 200)
+        'message': all_games_serialized,
+        'selected_game_ids': joined_game_ids,
+        'status': 'success'
+    })
     
 
 @csrf_exempt
@@ -179,8 +191,12 @@ def create_event(request):
                 gameAdmin = GameAdmin.objects.get(uid = request.user)
             except GameAdmin.DoesNotExist:
                 return JsonResponse({
-                    
+                    'status': 'error', 'message': str(e)
                 })
+            try:
+                game = Game.objects.get(name=game)
+            except Game.DoesNotExist as e:
+                return JsonResponse({'status': 'error', 'message': str(e)})
             # For image uploads, use FormData with `request.FILES`
             event = Event(name=name, game=game, amount=amount,image = image,created_by = gameAdmin)
             event.save()
@@ -198,25 +214,41 @@ def create_event(request):
 @require_POST
 @csrf_exempt
 def update_event(request, event_id):
-    if request.method == 'POST':
+    print(">>> Event update hit!")
+    print("POST DATA:", request.POST)
+    print("FILES:", request.FILES)
+    try:
+        game_name = request.POST.get('game')
+        game_name = int(game_name)
+        print(game_name)
+        if not game_name:
+            return JsonResponse({'status': 'error', 'message': 'Game name is required'})
+
         try:
-            event = Event.objects.get(pk=event_id)
-            event.name = request.POST.get('name')
-            event.game = request.POST.get('game')
-            event.amount = request.POST.get('amount')
-            image = request.FILES.get('thumbnail')
-            if image:
-                event.image = image
-            event.save()
-            return JsonResponse({'status': 'updated'})
-        except Event.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'Event not found'})
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)})
-    return JsonResponse({
-        'message':"Only post method allowed.",
-        'status' : 'error'
-        })
+            game = Game.objects.get(gid=game_name)
+            print("Fetched game:", game)
+        except Game.DoesNotExist as e:
+            return JsonResponse({'status': 'error', 'message': f"Game '{game_name}' not found"})
+
+        event = Event.objects.get(pk=event_id)
+        event.name = request.POST.get('name')
+        event.game = game
+        event.amount = request.POST.get('amount')
+
+        image = request.FILES.get('thumbnail')
+        if image:
+            event.image = image
+
+        event.save()
+        print("Event updated:", event)
+
+        return JsonResponse({'status': 'updated'})
+
+    except Event.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Event not found'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)})
+
 
 @jwt_required
 @require_POST

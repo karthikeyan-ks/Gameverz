@@ -30,7 +30,7 @@ class Game(models.Model):
 
 class Event(models.Model):
     name = models.CharField(max_length=255)
-    game = models.CharField(max_length=255)
+    game = models.ForeignKey(Game,on_delete=models.CASCADE,related_name="game_event")
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='event_thumbnails/', blank=True, null=True)
 

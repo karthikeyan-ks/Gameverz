@@ -8,7 +8,7 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-*.db
+*.db    
 
 # VSCode or IDE files (optional)
 .vscode/

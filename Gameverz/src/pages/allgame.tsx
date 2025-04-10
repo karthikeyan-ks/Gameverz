@@ -46,9 +46,10 @@ const GameList = () => {
       });
   
       const games = response.data;
+      console.log(response.data);
       const cleaned = JSON.parse(games.message);
       const selected = new Set<number>(games.selected_game_ids); // 👈 here we extract the selected IDs
-      console.log(response.data);
+      
       
       setGames(cleaned);
       setSelectedGames(selected); // 👈 pre-check these games

@@ -39,10 +39,13 @@ def list_event(request):
         'status': 'success'
     })
 
+
+
 @require_POST
 @jwt_required
 @csrf_exempt
 def allGames(request):
+    print("Entered the view")
     user = request.user
     try:
         gamer = Gamer.objects.get(uid=user)
@@ -51,7 +54,9 @@ def allGames(request):
             'message': 'Registered user is not a Gamer',
             'status': 'error'
         })
+    
     all_games = Game.objects.all()
+    print("User",user,all_games)
     joined_games = gamer.games.all()
     joined_game_ids = list(joined_games.values_list('id', flat=True))
     all_games_serialized = serialize('json', all_games)
@@ -61,6 +66,8 @@ def allGames(request):
         'selected_game_ids': joined_game_ids,
         'status': 'success'
     })
+    
+    
 
 @require_POST
 @jwt_required
@@ -93,3 +100,33 @@ def update_gamer_games(request, gid, action):
         return JsonResponse({'message': 'Game not found', 'status': 'error'})
     except Exception as e:
         return JsonResponse({'message': str(e), 'status': 'error'})
+
+
+
+@csrf_exempt
+@require_POST
+@jwt_required
+def eventsForYou(request):
+    user = request.user
+    try:
+        gamer = Gamer.objects.get(uid=user)
+    except Gamer.DoesNotExist:
+        return JsonResponse({'message': 'User is not a Gamer', 'status': 'error'})
+    
+    joined_games = gamer.games.all()
+    events = Event.objects.filter(game__in=joined_games)
+
+    event_list = [
+        {
+            'id': event.id,
+            'name': event.name,
+            'game': event.game.name,
+            'amount': str(event.amount),
+            'image': event.image.url if event.image else None,
+            'created_by': event.created_by.uid.username,
+            'created_at': event.created_at.isoformat(),
+        }
+        for event in events
+    ]
+
+    return JsonResponse({'status': 'success', 'events': event_list})

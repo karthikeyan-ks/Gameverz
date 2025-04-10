@@ -9,7 +9,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Paper from '@mui/material/Paper';
 import CardContent from '@mui/material/CardContent';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
@@ -28,10 +27,31 @@ import {
 import {
   listItem, darkTheme, Sidebar, Logo, MainContent, SectionCard, GameItem
 } from '../style/dashboard_style';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Container } from '@mui/material';
+import GameSwiper from './SwiperImage';
+import EventsForYou from './similarEvent';
+
+interface Game {
+  pk: number;
+  fields: {
+    name: string;
+    image: string;
+    description: string;
+    date_of_join: string;
+    created_by: number;
+  };
+  model: string;
+}
+
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const imageURL = import.meta.env.VITE_API_IMAGE_URL;
 
 export default function Gameverz() {
   const location = useLocation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [games, setGames] = useState<Game[]>([]);
   const user = location.state?.user || {
     display_name: 'Player',
     email: 'player@example.com',
@@ -39,161 +59,99 @@ export default function Gameverz() {
     photo_url: '/api/placeholder/150/150',
   };
 
-  const games = [
-    { name: 'Valorant', icon: <SportsEsportsIcon /> },
-    { name: 'PUBG', icon: <SportsEsportsIcon /> },
-    { name: 'Fortnite', icon: <SportsEsportsIcon /> },
-  ];
-
   const performanceData = [
     { name: 'Valorant', performance: 50 },
     { name: 'PUBG', performance: 50 },
     { name: 'Fortnite', performance: 50 }
   ];
 
+  useEffect(() => {
+    axios.post(`${baseURL}/gamer/dashboard/`, {}, {
+      withCredentials: true,
+    }).then(response => {
+      if (response.data.status === 'success') {
+        const cleaned = JSON.parse(response.data.message);
+        const selected = response.data.selected_game_ids;
+        const selectedGames = cleaned.filter((game: any) => selected.includes(game.pk));
+        setGames(selectedGames);
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+  }, []);
+
   return (
     <ThemeProvider theme={darkTheme}>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', bgcolor: 'background.default' }}>
         <CssBaseline />
         <Sidebar>
           <Logo>
-            <img
-              src={image}
-              alt="Gameverz Logo"
-              style={{ width: 50, height: 50 }}
-            />
+            <img src={image} alt="Gameverz Logo" style={{ width: 50, height: 50 }} />
           </Logo>
           <ListItem>
-            <Typography sx={listItem}>
-              Dashboard
-            </Typography>
+            <Typography sx={listItem}>Dashboard</Typography>
             <IconButton>
-              <ArrowBackIcon />
+              <ArrowBackIcon sx={{ color: 'primary.main' }} />
             </IconButton>
           </ListItem>
-
           <List>
             <ListItem disablePadding sx={{ mb: 1 }}>
               <ListItemButton sx={{ pl: 1 }}>
                 <ListItemIcon sx={{ minWidth: 30 }}>
-                  <DashboardIcon sx={{ color: '#fff' }} />
+                  <DashboardIcon sx={{ color: 'primary.main' }} />
                 </ListItemIcon>
-                <ListItemText
-                  primary="User Dashboard"
-                  primaryTypographyProps={{
-                    variant: 'body2',
-                    sx: { fontSize: '0.8rem' }
-                  }}
-                />
+                <ListItemText primary="User Dashboard" primaryTypographyProps={{ variant: 'body2', sx: { fontSize: '0.85rem', color: 'text.primary' } }} />
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton sx={{ pl: 1 }}>
+              <ListItemButton sx={{ pl: 1 }} onClick={() => navigate("/allGame")}> 
                 <ListItemIcon sx={{ minWidth: 30 }}>
-                  <SportsEsportsIcon sx={{ color: '#fff' }} />
+                  <SportsEsportsIcon sx={{ color: 'primary.main' }} />
                 </ListItemIcon>
-                <ListItemText
-                  primary="All Games"
-                  primaryTypographyProps={{
-                    variant: 'body2',
-                    sx: { fontSize: '0.8rem' }
-                  }}
-                  onClick={()=>{
-                    navigate("/allGame")
-                  }}
-                />
+                <ListItemText primary="All Games" primaryTypographyProps={{ variant: 'body2', sx: { fontSize: '0.85rem', color: 'text.primary' } }} />
               </ListItemButton>
             </ListItem>
           </List>
-          <Box sx={{ mt: 'auto', mb: 2 }}>
-            <Paper
-              sx={{
-                backgroundColor: '#0D2231',
-                height: 100,
-                width: '100%'
-              }}
-            />
-          </Box>
         </Sidebar>
 
         <MainContent>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: "center", gap: "20px", mb: 3 }}>
-            <IconButton sx={{ backgroundColor: '#10172A' }}>
-              <PersonIcon />
+            <IconButton sx={{ backgroundColor: 'primary.dark' }}>
+              <PersonIcon sx={{ color: 'primary.main' }} />
             </IconButton>
-            <Typography variant="h5" sx={{ textAlign: "center", height: "100%",color:"black" }}>
-              {user.email.split('@')[0]}
-            </Typography>
+            <Typography variant="h5" sx={{ color: 'text.primary' }}>{user.email.split('@')[0]}</Typography>
           </Box>
 
           <Grid container spacing={3}>
-            {/* User Profile Section */}
             <Grid item xs={12} md={3}>
-              <SectionCard className="blueAccent">
+              <SectionCard>
                 <CardContent sx={{ p: 0 }}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      flexDirection:"column",
-                      alignItems:"center",
-                      p: 2,
-                      position: 'relative'
-                    }}
-                  >
-                    <Avatar
-                      src={`${user.photo_url}`}
-                      alt={user.display_name}
-                      sx={{
-                        width: 80,
-                        height: 80,
-                        border: '3px solid #10172A',
-                      }}
-                    />
-                    <IconButton
-                      size="small"
-                      sx={{
-                        position: 'absolute',
-                        bottom: 10,
-                        right: 10,
-                        backgroundColor: '#0ff',
-                        p: 0.5
-                      }}
-                    >
+                  <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: "column", alignItems: "center", p: 2, position: 'relative' }}>
+                    <Avatar src={user.photo_url} alt={user.display_name} sx={{ width: 80, height: 80, border: '3px solid', borderColor: 'primary.main' }} />
+                    <IconButton size="small" sx={{ position: 'absolute', bottom: 10, right: 10, backgroundColor: 'primary.main', p: 0.5 }}>
                       <SportsEsportsIcon sx={{ fontSize: 16, color: '#000' }} />
                     </IconButton>
-                    <Typography  sx={{
-                      textAlign:"start",
-                      width:"100%"
-                    }}>
-                      name :{user.display_name}
-                    </Typography>
-                    <Typography sx={{
-                      textAlign:"start",
-                      width:"100%"
-                    }}>
-                      email :{user.email}
-                    </Typography>
+                    <Typography sx={{ width: "100%", color: 'text.primary' }}>name: {user.display_name}</Typography>
+                    <Typography sx={{ width: "100%", color: 'text.secondary' }}>email: {user.email}</Typography>
                   </Box>
                 </CardContent>
               </SectionCard>
             </Grid>
 
-            {/* Configured Games Section */}
             <Grid item xs={12} md={9}>
               <SectionCard>
                 <CardContent>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
-                    Configured Games
-                  </Typography>
+                  <Typography variant="h6" sx={{ mb: 2, color: 'text.primary' }}>Configured Games</Typography>
                   <List sx={{ p: 0 }}>
                     {games.map((game, index) => (
                       <GameItem key={index}>
                         <ListItemIcon sx={{ minWidth: 30 }}>
-                          {game.icon}
+                          <img src={`${imageURL}/media/${game.fields.image}`} alt={game.fields.name} style={{ width: '24px', height: '24px', objectFit: 'cover' }} />
                         </ListItemIcon>
-                        <ListItemText primary={game.name} />
-                        <CheckCircleIcon sx={{ color: '#0ff' }} />
+                        <ListItemText primary={game.fields.name} primaryTypographyProps={{ sx: { color: 'text.primary' } }} />
+                        <ListItemText primary={game.fields.date_of_join} primaryTypographyProps={{ sx: { color: 'text.secondary' } }} />
+                        <CheckCircleIcon sx={{ color: 'primary.main' }} />
                       </GameItem>
                     ))}
                   </List>
@@ -201,79 +159,59 @@ export default function Gameverz() {
               </SectionCard>
             </Grid>
 
-            {/* Achievements Section */}
             <Grid item xs={12} md={6}>
               <SectionCard>
                 <CardContent>
-                  <Typography variant="h6" sx={{ mb: 1 }}>
-                    Achievements
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    <List sx={{ p: 0 }}>
-                      <ListItem disablePadding>
-                        <ListItemIcon sx={{ minWidth: 30 }}>
-                          <EmojiEventsIcon sx={{ color: '#FFD700' }} />
-                        </ListItemIcon>
-                        <ListItemText primary="Top 1% in Valorant"
-                          primaryTypographyProps={{ sx: { fontSize: '0.85rem' } }} />
-                      </ListItem>
-                      <ListItem disablePadding>
-                        <ListItemIcon sx={{ minWidth: 30 }}>
-                          <EmojiEventsIcon sx={{ color: '#C0C0C0' }} />
-                        </ListItemIcon>
-                        <ListItemText primary="200+ PUBG matches completed"
-                          primaryTypographyProps={{ sx: { fontSize: '0.85rem' } }} />
-                      </ListItem>
-                      <ListItem disablePadding>
-                        <ListItemIcon sx={{ minWidth: 30 }}>
-                          <EmojiEventsIcon sx={{ color: '#CD7F32' }} />
-                        </ListItemIcon>
-                        <ListItemText primary="Fortnite Season Champ"
-                          primaryTypographyProps={{ sx: { fontSize: '0.85rem' } }} />
-                      </ListItem>
-                    </List>
-                  </Box>
+                  <Typography variant="h6" sx={{ mb: 1, color: 'text.primary' }}>Achievements</Typography>
+                  <List sx={{ p: 0 }}>
+                    <ListItem disablePadding>
+                      <ListItemIcon sx={{ minWidth: 30 }}>
+                        <EmojiEventsIcon sx={{ color: '#FFD700' }} />
+                      </ListItemIcon>
+                      <ListItemText primary="Top 1% in Valorant" primaryTypographyProps={{ sx: { fontSize: '0.85rem', color: 'text.primary' } }} />
+                    </ListItem>
+                    <ListItem disablePadding>
+                      <ListItemIcon sx={{ minWidth: 30 }}>
+                        <EmojiEventsIcon sx={{ color: '#C0C0C0' }} />
+                      </ListItemIcon>
+                      <ListItemText primary="200+ PUBG matches completed" primaryTypographyProps={{ sx: { fontSize: '0.85rem', color: 'text.primary' } }} />
+                    </ListItem>
+                    <ListItem disablePadding>
+                      <ListItemIcon sx={{ minWidth: 30 }}>
+                        <EmojiEventsIcon sx={{ color: '#CD7F32' }} />
+                      </ListItemIcon>
+                      <ListItemText primary="Fortnite Season Champ" primaryTypographyProps={{ sx: { fontSize: '0.85rem', color: 'text.primary' } }} />
+                    </ListItem>
+                  </List>
                 </CardContent>
               </SectionCard>
             </Grid>
 
-            {/* Performance Section */}
             <Grid item xs={12} md={6}>
               <SectionCard>
                 <CardContent>
-                  <Typography variant="h6" sx={{ mb: 1 }}>
-                    Performance
-                  </Typography>
+                  <Typography variant="h6" sx={{ mb: 1, color: 'text.primary' }}>Performance</Typography>
                   <ResponsiveContainer width="100%" height={200}>
-                    <LineChart
-                      data={performanceData}
-                      margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis domain={[0, 100]} />
-                      <Tooltip />
-                      <Line
-                        type="monotone"
-                        dataKey="performance"
-                        stroke="#00faff"
-                        strokeWidth={3}
-                        dot={{ r: 5, stroke: '#00faff', strokeWidth: 2, fill: '#fff' }}
-                        activeDot={{ r: 7 }}
-                      />
+                    <LineChart data={performanceData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+                      <XAxis dataKey="name" stroke="#aaa" />
+                      <YAxis domain={[0, 100]} stroke="#aaa" />
+                      <Tooltip contentStyle={{ backgroundColor: '#0D2231', borderColor: '#0ff' }} labelStyle={{ color: '#0ff' }} itemStyle={{ color: '#fff' }} />
+                      <Line type="monotone" dataKey="performance" stroke="#0ff" strokeWidth={3} dot={{ r: 5, stroke: '#0ff', strokeWidth: 2, fill: '#000' }} activeDot={{ r: 7 }} />
                     </LineChart>
                   </ResponsiveContainer>
-
                 </CardContent>
               </SectionCard>
             </Grid>
 
-            {/* Bottom Section - could be for stats or friends */}
+            <Container sx={{ m: 2 }}>
+              <GameSwiper />
+            </Container>
+
             <Grid item xs={12}>
               <SectionCard>
-                <CardContent>
-                  <Box sx={{ height: 100 }} /> {/* Placeholder for bottom section content */}
-                </CardContent>
+              <Typography variant="h6" sx={{ mb: 2,m:1, textAlign:"center", color: 'text.primary' }}>Events for you</Typography>
+                <EventsForYou/>
               </SectionCard>
             </Grid>
           </Grid>
