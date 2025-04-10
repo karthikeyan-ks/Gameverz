@@ -9,11 +9,9 @@ import {
     InputLabel,
     Avatar,
 } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+
 
 const Signup: React.FC = () => {
-    const location = useLocation()
-    const user = location.state || null
     const [formData, setFormData] = useState({
         username: '',
         email: '',

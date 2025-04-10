@@ -197,7 +197,7 @@ export default function Addevent() {
                 freeSolo
                 value={game}
                 inputValue={game}
-                onInputChange={(e, newInputValue) => {
+                onInputChange={(_e, newInputValue) => {
                   setGame(newInputValue);
                   setGameList([])
 
@@ -205,7 +205,7 @@ export default function Addevent() {
                     setGameList([]); // clear game list when input is cleared
                   }
                 }}
-                onChange={(e, val) => {
+                onChange={(_e, val) => {
                   setGame(val || '');
                 }}
                 renderInput={(params) => (

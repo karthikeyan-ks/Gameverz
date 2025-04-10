@@ -21,7 +21,7 @@ export const darkTheme = createTheme({
     fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
   },
 });
-export const Sidebar = styled(Box)(({ theme }) => ({
+export const Sidebar = styled(Box)(({ }) => ({
   width: '240px',
   height: '100vh',
   backgroundColor: '#10172A',

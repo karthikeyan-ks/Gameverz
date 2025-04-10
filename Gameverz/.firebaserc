@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "gameverz"
-  }
+    "default": "gameverz-58d5d",
+    "gameverz": "gameverz-58d5d"
+  },
+  "targets": {},
+  "etags": {}
 }

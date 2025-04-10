@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, Typography, CardMedia, Grid, CircularProgress, Button } from '@mui/material';
 import axios from 'axios';
 type Event = {

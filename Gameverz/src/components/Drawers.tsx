@@ -71,6 +71,7 @@ export default function Drawers() {
           },
           credentials: 'include',
         }).then((res)=>{
+          console.log(res)
           navigate('/')
         });
 
