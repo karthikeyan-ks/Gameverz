@@ -10,8 +10,9 @@ from django.conf import settings
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 import re
-from .models import GameAdmin
+from .models import GameAdmin,Gamer
 from backend.decorator import jwt_login_response
+from django.db import IntegrityError
 
 # Get the absolute path to the service account file
 FIREBASE_CREDENTIALS_PATH = os.path.join(settings.BASE_DIR, "firebase-key.json")
@@ -59,6 +60,15 @@ def firebase_login(request):
             if created:
                 user.set_unusable_password()
                 user.save()
+            
+            try:
+                gamer, created = Gamer.objects.get_or_create(uid=user)
+            except IntegrityError:
+                # fallback in case of race condition
+                gamer = Gamer.objects.get(uid=user)
+            if created:
+                print("A new Gamer is created..")
+            
             login(request,user)
             response_data = {
                 "message": "Login successful",
