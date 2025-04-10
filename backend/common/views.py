@@ -5,9 +5,10 @@ from gameAdmin.models import Game
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.core.serializers import serialize
+from backend.decorator import jwt_required
 
 @require_POST
-@login_required
+@jwt_required
 @csrf_exempt
 def games(request,name):
     print(request.user.username)
